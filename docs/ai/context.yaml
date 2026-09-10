@@ -1,0 +1,46 @@
+solution:
+  name: DEMO.sln
+  stack: .NET 8, ASP.NET Core, EF Core, AutoMapper, SQL Server
+  layers:
+    - Controllers
+    - Services
+    - Data
+  dependency_flow: Controllers -> Services -> Data
+
+commands:
+  restore: dotnet restore DEMO.sln
+  build: dotnet build DEMO.sln -c Debug
+  run_api: dotnet run --project Controllers
+  watch_api: dotnet watch run --project Controllers
+  add_migration: dotnet ef migrations add MigrationName --project Data
+  update_database: dotnet ef database update --project Data
+
+global_rules:
+  language: English for code identifiers and persisted names
+  delete_strategy: logical delete by default
+  audit_fields:
+    - IsDeleted
+    - CreatedAt
+    - ModifiedAt
+    - CreatedByUserId
+    - ModifiedByUserId
+  projection: AutoMapper profiles in Services/Mappings
+  permissions_seed:
+    required_in_repo: Services/Constants/Permissions.cs
+    optional_local_sql: Data/Scripts/20260311_SeedSetPermissions.sql
+    rule: update the SQL seed only if it exists in the current workspace; otherwise document the local-only step
+  paged_types:
+    request: Services/DTOs/Shared/PagedRequest.cs
+    result: Services/DTOs/Shared/PagedResult.cs
+
+cross_module_facts:
+  
+
+docs:
+  index: docs/ai/README.md
+  overview: docs/ai/PROJECT_OVERVIEW.md
+  architecture: docs/ai/ARCHITECTURE.md
+  domain_rules: docs/ai/DOMAIN_RULES.md
+  module_checklist: docs/ai/MODULE_CHECKLIST.md
+  patterns: docs/ai/PATTERNS.md
+  decisions: docs/ai/DECISION_LOG.md
